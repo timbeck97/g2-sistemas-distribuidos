@@ -38,7 +38,12 @@ services:
     environment:
       - SERVER_PORT=8082
       - APP_NAME=app2(8082)
-
+  database_postgres:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
   webserver:
     image: "nginx"
     container_name: container-nginx

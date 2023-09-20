@@ -17,15 +17,17 @@ function setConnected(connected) {
 
 function connect() {
     if(tentativas>5) return;
-    stompClient = Stomp.over(new SockJS('http://127.0.0.1:9090/sistemasdistribuidos'));
+    stompClient = Stomp.over(new SockJS('http://127.0.0.1:8080/sistemasdistribuidos'));
     stompClient.connect({}, handleConnect, () => handle('erro'), (e) => handleDisconnect(e));
     console.log(stompClient);
+    //stompClient.reconnect_delay = 5000;
 
 
 }
 function handleConnect() {
     stompClient.subscribe('/game/partidas', function (data) {
         try {
+            console.log('----------> PARTIDAS: ',JSON.parse(data.body));
             showPartidas(JSON.parse(data.body));
         } catch (e) {
             console.log(e);
@@ -39,12 +41,12 @@ function handle(text) {
     console.log('aaaaaaaaaaaaaaaaaaaaaaaaa ' + text);
 }
 function handleDisconnect(e) {
-    console.log(e);
-    console.log('TENTANDO RECONECTAR');
+    //console.log(e);
+    //console.log('TENTANDO RECONECTAR');
     setInterval(() => {
         connect();
         tentativas=tentativas+1;
-    }, 1000);
+    }, 5000);
     
   
 }
@@ -60,14 +62,14 @@ function carregarPartidas() {
 }
 function criarPartida() {
     let obj = {
-        userName: $("#name").val(),
+        nome: $("#name").val(),
     }
     stompClient.send("/game/initGame", {}, JSON.stringify(obj));
 
 }
 function entrarPartida(id) {
     let obj = {
-        userName: $("#name").val(),
+        nomeParticipante: $("#name").val(),
         idPartida: id
     }
     stompClient.send("/game/partida/" + id, {}, JSON.stringify(obj));
@@ -78,13 +80,17 @@ function entrarPartida(id) {
 
     });
     $("#novaPartida").prop('disabled', true);
+    
 }
 function showDadosPartida(partida) {
     console.log('chamou a funcao');
     $("#game").empty();
     let id = "<p>ID Partida: " + partida.id + "</p>";
-    let jogadores = "<p>" + partida.jogadores.map(x => x.userName).join(',') + "</p>";
+    let jogadores = "<p>" + partida.jogadores.map(x => x.nome).join(',') + "</p>";
     $("#game").append(id + jogadores);
+    if(subscriptionRoom!=null){
+        $(".entrar-partida").attr("disabled", true);
+    }
 
 
 }
@@ -92,7 +98,7 @@ function showPartidas(partida) {
     $("#partidas").empty();
     for (let i = 0; i < partida.length; i++) {
         let id = "<td>" + partida[i].id + "</td>";
-        let jogadores = "<td>" + partida[i].jogadores.map(x => x.userName).join(',') + "</td>";
+        let jogadores = "<td>" + partida[i].jogadores.map(x => x.nome).join(',') + "</td>";
         let entrarPartida = "<td><button class='btn btn-success entrar-partida'  data-partida-id='" + partida[i].id + "'>Entrar</button></td>";
         $("#partidas").append("<tr>" + id + jogadores + entrarPartida + "</tr>");
     }

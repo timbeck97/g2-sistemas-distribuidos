@@ -1,13 +1,23 @@
 package com.faccat.sistemasdistribuidos.g2.jogodistribuido.model;
 
+import jakarta.persistence.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
 public class Partida {
 
+    @Id
+    @SequenceGenerator(name = "SEQ_PARTIDA", allocationSize = 1, sequenceName = "partida_id_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_PARTIDA")
     private long id;
-    private List<Jogador> jogadores;
 
+    @Column(columnDefinition = "boolean default false")
+    private boolean encerrada;
+
+    public Partida() {
+    }
 
     public long getId() {
         return id;
@@ -17,14 +27,11 @@ public class Partida {
         this.id = id;
     }
 
-    public List<Jogador> getJogadores() {
-        if(jogadores==null){
-            jogadores=new ArrayList<>();
-        }
-        return jogadores;
+    public boolean isEncerrada() {
+        return encerrada;
     }
 
-    public void setJogadores(List<Jogador> jogadores) {
-        this.jogadores = jogadores;
+    public void setEncerrada(boolean encerrada) {
+        this.encerrada = encerrada;
     }
 }

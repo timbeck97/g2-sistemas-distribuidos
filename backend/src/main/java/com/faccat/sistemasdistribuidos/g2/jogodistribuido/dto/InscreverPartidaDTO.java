@@ -2,7 +2,7 @@ package com.faccat.sistemasdistribuidos.g2.jogodistribuido.dto;
 
 public class InscreverPartidaDTO {
     private long idPartida;
-    private String userName;
+    private String nomeParticipante;
 
 
     public long getIdPartida() {
@@ -13,11 +13,11 @@ public class InscreverPartidaDTO {
         this.idPartida = idPartida;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getNomeParticipante() {
+        return nomeParticipante;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setNomeParticipante(String nomeParticipante) {
+        this.nomeParticipante = nomeParticipante;
     }
 }
