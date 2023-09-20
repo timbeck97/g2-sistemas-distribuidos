@@ -1,0 +1,57 @@
+version: "3.7"
+services:
+  jogodistribuido_app1:
+    image: jogodistribuido
+    container_name: jogodistribuido_8080
+    build: ./
+    restart: always
+    ports:
+      - "8080:8080"
+    networks:
+      - jogodistribuido_network
+    environment:
+      - SERVER_PORT=8080
+      - APP_NAME=app0(8080)
+
+  jogodistribuido_app2:
+    image: jogodistribuido
+    container_name: jogodistribuido_8081
+    build: .
+    restart: always
+    ports:
+      - "8081:8081"
+    networks:
+      - jogodistribuido_network
+    environment:
+      - SERVER_PORT=8081
+      - APP_NAME=app1(8081)
+
+  jogodistribuido_app3:
+    image: jogodistribuido
+    container_name: jogodistribuido_8082
+    build: .
+    restart: always
+    ports:
+      - "8082:8082"
+    networks:
+      - jogodistribuido_network
+    environment:
+      - SERVER_PORT=8082
+      - APP_NAME=app2(8082)
+
+  webserver:
+    image: "nginx"
+    container_name: container-nginx
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+    command: [nginx-debug, '-g', 'daemon off;']
+    networks:
+      jogodistribuido_network:
+    depends_on:
+      - "jogodistribuido_app1"
+      - "jogodistribuido_app2"
+      - "jogodistribuido_app3"
+networks:
+  jogodistribuido_network:
