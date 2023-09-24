@@ -23,12 +23,14 @@ public class GameService {
     @Autowired
     private PartidaJogadorRepository partidaJogadorRepository;
 
-    public void iniciaPartida(Jogador jogador){
+    public PartidaDTO iniciaPartida(Jogador jogador){
         jogador=getJogador(jogador);
         Partida partida=new Partida();
         partida=partidaRepository.save(partida);
         PartidaJogador partidaJogador=new PartidaJogador(partida, jogador);
         partidaJogadorRepository.save(partidaJogador);
+        return createPartidaDTO(partida);
+
     }
     public Partida entrarPartida(InscreverPartidaDTO subscriber){
         Jogador jogador=new Jogador();

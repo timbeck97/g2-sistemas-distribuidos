@@ -40,14 +40,7 @@ public class GameController {
         return gameService.findPartidas();
 
     }
-    @MessageMapping("/game/initGame")
-    @SendTo("/game/partidas")
-    public List<PartidaDTO> init(@Payload Jogador user, SimpMessageHeaderAccessor headerAccessor){
-        System.out.println(user.getNome());
-        gameService.iniciaPartida(user);
-        return gameService.findPartidas();
 
-    }
     @MessageMapping("/game/partida/{idPartida}")
     @SendTo("/game/partida/{idPartida}")
     public PartidaDTO subscribePartida(@Payload InscreverPartidaDTO subscriber, SimpMessageHeaderAccessor headerAccessor){

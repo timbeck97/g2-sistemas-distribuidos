@@ -64,8 +64,9 @@ function criarPartida() {
     let obj = {
         nome: $("#name").val(),
     }
-    stompClient.send("/game/initGame", {}, JSON.stringify(obj));
-
+    //stompClient.send("/game/initGame", {}, JSON.stringify(obj));
+    if(stompClient==null) return;   
+    requestCriarPartida($("#name").val());
 }
 function entrarPartida(id) {
     let obj = {
@@ -93,6 +94,18 @@ function showDadosPartida(partida) {
     }
 
 
+}
+function requestCriarPartida(userName){
+    $.ajax({
+        type: "POST",
+        url: 'http://127.0.0.1:8080/partida/'+userName,
+        contentType : "application/json",
+        success: (data)=>{
+            console.log(data);
+             stompClient.send("/game/partidas", {}, '');
+             showDadosPartida(data);
+        },
+      });
 }
 function showPartidas(partida) {
     $("#partidas").empty();
