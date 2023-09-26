@@ -4,7 +4,7 @@ import Chat from '../Chat/Chat'
 
 const Container = () =>{
     return(
-        <div className="container">
+        <div className="container-cards">
             <Chat />
             <Cards />
             <Cards />

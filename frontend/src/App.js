@@ -1,10 +1,9 @@
-import Container from './components/Container-cards/Container-cards';
+import PageLogin from "./components/Page-login/Page-login";
 
 function App() {
   return (
     <div className="App">
-
-      <Container />
+      <PageLogin />
     </div>
   );
 }

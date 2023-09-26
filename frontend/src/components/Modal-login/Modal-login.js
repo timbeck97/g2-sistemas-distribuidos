@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import { Modal, Button, Form } from 'react-bootstrap';
 
 const WebSocketModal = ({ show, onHide, onConnect }) => {
@@ -18,10 +19,10 @@ const WebSocketModal = ({ show, onHide, onConnect }) => {
       </Modal.Header>
       <Modal.Body>
         <Form.Group controlId="name">
-          <Form.Label>User Name</Form.Label>
+          <Form.Label>Nome do Jogador</Form.Label>
           <Form.Control
             type="text"
-            placeholder="Enter your name"
+            placeholder="Digite seu Nome"
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
@@ -29,10 +30,10 @@ const WebSocketModal = ({ show, onHide, onConnect }) => {
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={onHide}>
-          Cancel
+          Cancelar
         </Button>
         <Button variant="primary" onClick={handleConnect}>
-          Connect
+          Conectar
         </Button>
       </Modal.Footer>
     </Modal>
