@@ -45,7 +45,7 @@ public class GameController {
     @SendTo("/game/partida/{idPartida}")
     public void sendCarta(@Payload CardDTO card, SimpMessageHeaderAccessor headerAccessor){
         simpleMessagingTemplate.convertAndSend("/game/partidas",gameService.findPartidas());
-        return gameService.createPartidaDTO(partida);
+
 
     }
     @MessageMapping("/game/partida/{idPartida}")
