@@ -43,4 +43,16 @@
     background-color: #e0e0e0;
     color: #333; 
   }
+
+  .card-content-front{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .titleCard{
+    font-size: 5.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
   

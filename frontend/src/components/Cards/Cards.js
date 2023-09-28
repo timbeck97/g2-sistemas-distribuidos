@@ -1,15 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Cards.css';
 
-function Cards() {
+function Cards({onSelectCard, card}) {
   const [isActive, setIsActive] = useState(false);
   const [isBlocked, setIsBlocked] = useState(false);
-
+  useEffect(() => {
+    console.log(card);
+  },[])
   const toggleCard = () => {
     if (!isBlocked) {
       setIsBlocked(true);
       setIsActive(!isActive);
     }
+    onSelectCard('card selected')
   };
 
   return (
@@ -23,7 +26,8 @@ function Cards() {
           </div>
           <div className="front">
             <div className="card-content-front">
-              <h2>Você tirou tal numero</h2>
+              <h2>Você tirou o numero</h2>
+              <p className='titleCard'><strong>{card.value}</strong></p>
               <p>Aguarde os outros jogadores</p>
             </div>
           </div>

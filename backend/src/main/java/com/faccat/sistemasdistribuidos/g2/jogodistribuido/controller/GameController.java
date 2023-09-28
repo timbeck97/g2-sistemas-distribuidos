@@ -1,6 +1,7 @@
 package com.faccat.sistemasdistribuidos.g2.jogodistribuido.controller;
 
 
+import com.faccat.sistemasdistribuidos.g2.jogodistribuido.dto.CardDTO;
 import com.faccat.sistemasdistribuidos.g2.jogodistribuido.dto.InscreverPartidaDTO;
 import com.faccat.sistemasdistribuidos.g2.jogodistribuido.dto.PartidaDTO;
 import com.faccat.sistemasdistribuidos.g2.jogodistribuido.model.Jogador;
@@ -40,7 +41,13 @@ public class GameController {
         return gameService.findPartidas();
 
     }
+    @MessageMapping("/game/partida/{idPartida}/carta")
+    @SendTo("/game/partida/{idPartida}")
+    public void sendCarta(@Payload CardDTO card, SimpMessageHeaderAccessor headerAccessor){
+        simpleMessagingTemplate.convertAndSend("/game/partidas",gameService.findPartidas());
+        return gameService.createPartidaDTO(partida);
 
+    }
     @MessageMapping("/game/partida/{idPartida}")
     @SendTo("/game/partida/{idPartida}")
     public PartidaDTO subscribePartida(@Payload InscreverPartidaDTO subscriber, SimpMessageHeaderAccessor headerAccessor){
