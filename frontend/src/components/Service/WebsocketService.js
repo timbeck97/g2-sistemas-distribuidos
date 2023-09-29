@@ -48,7 +48,7 @@ class WebsocketService {
             nomeParticipante: nomeJogador,
             idPartida: id
         }
-        this.stompClient.send("/game/partida/" + id, {}, JSON.stringify(obj));
+        this.stompClient.send("/game/partida/entrar/" + id, {}, JSON.stringify(obj));
         this.subscriptionRoom = this.stompClient.subscribe('/game/partida/' + id, function (data) {
             callback(JSON.parse(data.body));
     

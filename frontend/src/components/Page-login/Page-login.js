@@ -14,14 +14,8 @@ function PageLogin() {
   const [userName, setUserName] = useState("");
   const [view, setView]= useState("ROOMS");
   const [partidas, setPartidas]= useState([]);
-  const [cards, setCards]= useState([
-    {value: '5'},
-    {value: '-10'},
-    {value: '15'},
-    {value: '0'},
-    {value: '20'},
-  ]);
-
+  const [cards, setCards]= useState([]);
+  const [rodada, setRodada]= useState({});
   useEffect(() => {
     webSocket=new WebsocketService();
     webSocket.connect().then(()=>{
@@ -47,13 +41,16 @@ function PageLogin() {
       .then((data) => {
         console.log('Success:', data);
         webSocket.carregarPartidas();
+
         entrarPartida(data.id);
       })
       
   }
   const entrarPartida = (id) => {
-    webSocket.entrarPartida(id, userName, (partida)=>{
-      console.log('----------> partida: ',partida)
+    webSocket.entrarPartida(id, userName, (rodada)=>{
+      console.log('----------> partida: ',rodada)
+      setRodada(rodada);
+      setCards(rodada.cartas);
       setView('GAME');
     })
   }
@@ -83,7 +80,7 @@ function PageLogin() {
   return (
     <div className="connected">
       <p className="user">Conectado como: {userName}</p> 
-      {view === "ROOMS" ?<Rooms partidas={partidas} onCriarPartida={()=>criarPartida()} entrarPartida={(id)=>entrarPartida(id)}/> :  <Container cards={cards} onSelectCard={(text)=>onSelectCard(text)} />}
+      {view === "ROOMS" ?<Rooms partidas={partidas} onCriarPartida={()=>criarPartida()} entrarPartida={(id)=>entrarPartida(id)}/> :  <Container cards={cards} rodada={rodada} onSelectCard={(text)=>onSelectCard(text)} />}
     
     </div>
   );

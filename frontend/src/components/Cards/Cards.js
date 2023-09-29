@@ -5,7 +5,7 @@ function Cards({onSelectCard, card}) {
   const [isActive, setIsActive] = useState(false);
   const [isBlocked, setIsBlocked] = useState(false);
   useEffect(() => {
-    console.log(card);
+  
   },[])
   const toggleCard = () => {
     if (!isBlocked) {

@@ -7,3 +7,17 @@
     align-items: center;
     justify-content: center;
 }
+
+.boxHora{
+    display: flex;
+    justify-content: center;
+}
+.boxHora h2{
+    color: #fff;
+    font-size: 50px;
+    font-weight: 700;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    margin-top: 50px;
+}

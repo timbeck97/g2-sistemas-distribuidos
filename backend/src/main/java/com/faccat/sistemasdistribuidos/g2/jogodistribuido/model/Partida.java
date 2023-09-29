@@ -1,9 +1,11 @@
 package com.faccat.sistemasdistribuidos.g2.jogodistribuido.model;
 
+
+import com.faccat.sistemasdistribuidos.g2.jogodistribuido.enums.ESituacaoPartida;
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Date;
+
 
 @Entity
 public class Partida {
@@ -13,8 +15,15 @@ public class Partida {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_PARTIDA")
     private long id;
 
-    @Column(columnDefinition = "boolean default false")
-    private boolean encerrada;
+    @Enumerated(EnumType.STRING)
+    private ESituacaoPartida situacao;
+
+    private int rodada;
+
+    private int jogadores;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date hora;
 
     public Partida() {
     }
@@ -27,11 +36,35 @@ public class Partida {
         this.id = id;
     }
 
-    public boolean isEncerrada() {
-        return encerrada;
+    public ESituacaoPartida getSituacao() {
+        return situacao;
     }
 
-    public void setEncerrada(boolean encerrada) {
-        this.encerrada = encerrada;
+    public void setSituacao(ESituacaoPartida situacao) {
+        this.situacao = situacao;
+    }
+
+    public int getRodada() {
+        return rodada;
+    }
+
+    public void setRodada(int rodada) {
+        this.rodada = rodada;
+    }
+
+    public int getJogadores() {
+        return jogadores;
+    }
+
+    public void setJogadores(int jogadores) {
+        this.jogadores = jogadores;
+    }
+
+    public Date getHora() {
+        return hora;
+    }
+
+    public void setHora(Date hora) {
+        this.hora = hora;
     }
 }
