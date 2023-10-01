@@ -32,10 +32,10 @@ jobs:
     - name: Build Application with Maven
       run: mvn clean package
       
-      working-directory: /backend/
+      working-directory: backend/
       
     - name: Docker Compose Build
-      working-directory: ./backend/
+      working-directory: backend/
       run: docker compose build
       
     - name: Build and push Docker image
