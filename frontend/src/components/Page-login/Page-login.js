@@ -16,6 +16,7 @@ function PageLogin() {
   const [partidas, setPartidas]= useState([]);
   const [cards, setCards]= useState([]);
   const [rodada, setRodada]= useState({});
+  const [chosenCard, setChosenCard]= useState(null);
   useEffect(() => {
     webSocket=new WebsocketService();
     webSocket.connect().then(()=>{
@@ -33,7 +34,7 @@ function PageLogin() {
    }
   },[])
   const criarPartida = () => {
-    fetch('http://127.0.0.1:8080/partida/'+userName, {
+    fetch('http://127.0.0.1:8080/partida/', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
     })
@@ -41,18 +42,29 @@ function PageLogin() {
       .then((data) => {
         console.log('Success:', data);
         webSocket.carregarPartidas();
-
         entrarPartida(data.id);
       })
       
   }
   const entrarPartida = (id) => {
-    webSocket.entrarPartida(id, userName, (rodada)=>{
-      console.log('----------> partida: ',rodada)
-      setRodada(rodada);
-      setCards(rodada.cartas);
+    let partidaSubscribe=webSocket.entrarPartida(id, userName, (novaRodada)=>{
+      console.log('----------> partida: ',novaRodada)
+      setRodada(novaRodada);
+      setCards(novaRodada.cartas);
       setView('GAME');
+      if(novaRodada.rodada!==rodada.rodada){
+        setChosenCard(null);
+      }
+      if(novaRodada.situacaoPartida==='FINALIZADA'){
+        alert('Partida encerrada, voce fez '+novaRodada.jogadores.find(x=>x.nome===userName).pontos+' pontos');
+        partidaSubscribe.unsubscribe();
+        setView('ROOMS');
+        setRodada({});
+        setCards([]);
+        webSocket.carregarPartidas();
+      }
     })
+    console.log(partidaSubscribe);
   }
   
   const handleConnect = (name) => {
@@ -60,7 +72,9 @@ function PageLogin() {
     setUserName(name);
   };
   const onSelectCard = (text) => {
-    console.log(text);
+    webSocket.selecionarCarta(rodada.idPartida, userName, text)
+    setChosenCard(text);
+    console.log('----------> escolhida: ',text);
   }
   if (!connected) {
     return (
@@ -80,7 +94,7 @@ function PageLogin() {
   return (
     <div className="connected">
       <p className="user">Conectado como: {userName}</p> 
-      {view === "ROOMS" ?<Rooms partidas={partidas} onCriarPartida={()=>criarPartida()} entrarPartida={(id)=>entrarPartida(id)}/> :  <Container cards={cards} rodada={rodada} onSelectCard={(text)=>onSelectCard(text)} />}
+      {view === "ROOMS" ?<Rooms partidas={partidas} onCriarPartida={()=>criarPartida()} entrarPartida={(id)=>entrarPartida(id)}/> :  <Container cards={cards} chosenCard={chosenCard} rodada={rodada} onSelectCard={(text)=>onSelectCard(text)} />}
     
     </div>
   );

@@ -1,10 +1,8 @@
 package com.faccat.sistemasdistribuidos.g2.jogodistribuido.controller;
 
 
-import com.faccat.sistemasdistribuidos.g2.jogodistribuido.dto.CardDTO;
-import com.faccat.sistemasdistribuidos.g2.jogodistribuido.dto.InscreverPartidaDTO;
-import com.faccat.sistemasdistribuidos.g2.jogodistribuido.dto.PartidaDTO;
-import com.faccat.sistemasdistribuidos.g2.jogodistribuido.dto.RodadaDTO;
+import com.faccat.sistemasdistribuidos.g2.jogodistribuido.dto.*;
+import com.faccat.sistemasdistribuidos.g2.jogodistribuido.enums.ESituacaoPartida;
 import com.faccat.sistemasdistribuidos.g2.jogodistribuido.model.Jogador;
 import com.faccat.sistemasdistribuidos.g2.jogodistribuido.model.Partida;
 import com.faccat.sistemasdistribuidos.g2.jogodistribuido.repository.PartidaRepository;
@@ -39,7 +37,7 @@ public class GameController {
     @SendTo("/game/partidas")
     public List<PartidaDTO> connect(SimpMessageHeaderAccessor headerAccessor){
         System.out.println("CONSULTOU AS PARTIDAS CRIADAS");
-        return gameService.findPartidasNaoEncerradas();
+        return gameService.findPartidasBySituacao(ESituacaoPartida.AGUARDANDO);
 
     }
 
@@ -57,15 +55,23 @@ public class GameController {
     public PartidaDTO subscribePartida(@Payload InscreverPartidaDTO subscriber, SimpMessageHeaderAccessor headerAccessor){
         //System.out.println("Jogador: "+subscriber.getNomeParticipante()+" entrou na partida "+subscriber.getIdPartida());
         Partida partida=gameService.entrarPartida(subscriber);
-        simpleMessagingTemplate.convertAndSend("/game/partidas",gameService.findPartidasNaoEncerradas());
+        simpleMessagingTemplate.convertAndSend("/game/partidas",gameService.findPartidasBySituacao(ESituacaoPartida.AGUARDANDO));
         return gameService.createPartidaDTO(partida);
 
     }
     @MessageMapping("/game/partida/{idPartida}")
     @SendTo("/game/partida/{idPartida}")
     public RodadaDTO gereciaRodadas(@Payload RodadaDTO rodada, SimpMessageHeaderAccessor headerAccessor){
-        System.out.println("AAAAAAAAAA-------AAAAAAAAAAAA");
         return rodada;
+    }
+    @MessageMapping("/game/partida/selecionarCarta/{idPartida}")
+    public void sendCard(@Payload CartaEscolhidaDTO card, SimpMessageHeaderAccessor headerAccessor){
+        System.out.println("PARTIDA: "+card.getIdPartida());
+        System.out.println("JOGADOR: "+card.getJogador());
+        System.out.println("CARTA: "+card.getValue());
+        gameService.salvarCartaEscolhida(card);
+
+
     }
 
 }

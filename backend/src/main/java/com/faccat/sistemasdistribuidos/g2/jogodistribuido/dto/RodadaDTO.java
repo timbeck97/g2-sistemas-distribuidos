@@ -2,13 +2,14 @@ package com.faccat.sistemasdistribuidos.g2.jogodistribuido.dto;
 
 import com.faccat.sistemasdistribuidos.g2.jogodistribuido.enums.ESituacaoPartida;
 import com.faccat.sistemasdistribuidos.g2.jogodistribuido.model.Jogador;
+import com.faccat.sistemasdistribuidos.g2.jogodistribuido.model.JogadorDTO;
 
 import java.util.Date;
 import java.util.List;
 
 public class RodadaDTO {
     private long idPartida;
-    private List<Jogador> jogadores;
+    private List<JogadorDTO> jogadores;
     private int rodada;
 
     private Date hora;
@@ -25,11 +26,11 @@ public class RodadaDTO {
         this.idPartida = idPartida;
     }
 
-    public List<Jogador> getJogadores() {
+    public List<JogadorDTO> getJogadores() {
         return jogadores;
     }
 
-    public void setJogadores(List<Jogador> jogadores) {
+    public void setJogadores(List<JogadorDTO> jogadores) {
         this.jogadores = jogadores;
     }
 

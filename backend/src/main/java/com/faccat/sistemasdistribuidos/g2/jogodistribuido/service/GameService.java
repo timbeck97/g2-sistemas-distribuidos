@@ -1,9 +1,6 @@
 package com.faccat.sistemasdistribuidos.g2.jogodistribuido.service;
 
-import com.faccat.sistemasdistribuidos.g2.jogodistribuido.dto.CardDTO;
-import com.faccat.sistemasdistribuidos.g2.jogodistribuido.dto.InscreverPartidaDTO;
-import com.faccat.sistemasdistribuidos.g2.jogodistribuido.dto.PartidaDTO;
-import com.faccat.sistemasdistribuidos.g2.jogodistribuido.dto.RodadaDTO;
+import com.faccat.sistemasdistribuidos.g2.jogodistribuido.dto.*;
 import com.faccat.sistemasdistribuidos.g2.jogodistribuido.enums.ESituacaoPartida;
 import com.faccat.sistemasdistribuidos.g2.jogodistribuido.model.Jogador;
 import com.faccat.sistemasdistribuidos.g2.jogodistribuido.model.Partida;
@@ -27,16 +24,18 @@ public class GameService {
     private PartidaJogadorRepository partidaJogadorRepository;
     @Value("${game.segundos.rodada}")
     Integer segundosRodada;
+    @Value("${game.segundos.inicio.partida}")
+    Integer segundosInicioPartida;
+    @Value("${game.quantidade.maxima.jogadores}")
+    Integer quantidadeMinimaJogadores;
 
-    public PartidaDTO iniciaPartida(Jogador jogador){
-        jogador=getJogador(jogador);
+    public PartidaDTO iniciaPartida(){
+        System.out.println("CRIANDO PARTIDA");
         Partida partida=new Partida();
-        partida.setJogadores(1);
-        partida.setSituacao(ESituacaoPartida.ANDAMENTO);
-        partida.setHora(adicionaSegundos(new Date(),10));
+        partida.setJogadores(0);
+        partida.setSituacao(ESituacaoPartida.AGUARDANDO);
+        partida.setHora(adicionaSegundos(new Date(),segundosInicioPartida));
         partida=partidaRepository.save(partida);
-        PartidaJogador partidaJogador=new PartidaJogador(partida, jogador);
-        partidaJogadorRepository.save(partidaJogador);
         return createPartidaDTO(partida);
 
     }
@@ -46,16 +45,17 @@ public class GameService {
         jogador=getJogador(jogador);
         Partida partida=partidaRepository.findById(subscriber.getIdPartida()).get();
         partida.setJogadores(partida.getJogadores()+1);
-        if(partida.getJogadores()==2){
+        if(partida.getJogadores()==quantidadeMinimaJogadores){
             partida.setSituacao(ESituacaoPartida.ANDAMENTO);
-            partida.setHora(adicionaSegundos(new Date(),30));
+            partida.setHora(adicionaSegundos(new Date(),3));
         }
+        partida=partidaRepository.save(partida);
         PartidaJogador partidaJogador=new PartidaJogador(partida, jogador);
         partidaJogadorRepository.save(partidaJogador);
         return partida;
     }
-    public List<PartidaDTO> findPartidasNaoEncerradas(){
-        List<Partida> partidas=partidaRepository.findPartidasAndamento();
+    public List<PartidaDTO> findPartidasBySituacao(ESituacaoPartida situacao){
+        List<Partida> partidas=partidaRepository.findPartidasAndamento(situacao);
         List<PartidaDTO> dtos=new ArrayList<>();
         for (Partida partida : partidas) {
             dtos.add(createPartidaDTO(partida));
@@ -101,6 +101,13 @@ public class GameService {
             cards.add(card);
           }
           return cards;
+    }
+    public void salvarCartaEscolhida(CartaEscolhidaDTO card){
+        PartidaJogador partidaJogador=partidaJogadorRepository.findByPartidaIdAndJogadorNome(card.getIdPartida(),card.getJogador());
+        partidaJogador.setPontos(partidaJogador.getPontos()+Integer.parseInt(card.getValue()));
+        partidaJogadorRepository.save(partidaJogador);
+
+
     }
     public Date adicionaMinutos(Date data, int minutos){
         return new Date(data.getTime() + minutos * 60000);

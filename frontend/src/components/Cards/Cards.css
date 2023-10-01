@@ -18,7 +18,7 @@
     transform-style: preserve-3d;
     position: relative;
     margin: 0 1vw 0 1vw;
-    cursor: pointer;
+
   }
   
   .front,
@@ -39,9 +39,15 @@
     color: white;
   }
   
+  .back-block{
+    background-color: #e0e0e0;
+  }
   .front {
     background-color: #e0e0e0;
     color: #333; 
+  }
+  .front-block{
+    background-color: #05af2a !important;
   }
 
   .card-content-front{

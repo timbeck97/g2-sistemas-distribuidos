@@ -2,6 +2,7 @@ package com.faccat.sistemasdistribuidos.g2.jogodistribuido.dto;
 
 import com.faccat.sistemasdistribuidos.g2.jogodistribuido.enums.ESituacaoPartida;
 import com.faccat.sistemasdistribuidos.g2.jogodistribuido.model.Jogador;
+import com.faccat.sistemasdistribuidos.g2.jogodistribuido.model.JogadorDTO;
 
 import java.util.Date;
 import java.util.List;
@@ -12,7 +13,7 @@ public class PartidaDTO {
     private ESituacaoPartida situacao;
 
     private Date hora;
-    private List<Jogador> jogadores;
+    private List<JogadorDTO> jogadores;
 
     public long getId() {
         return id;
@@ -22,11 +23,11 @@ public class PartidaDTO {
         this.id = id;
     }
 
-    public List<Jogador> getJogadores() {
+    public List<JogadorDTO> getJogadores() {
         return jogadores;
     }
 
-    public void setJogadores(List<Jogador> jogadores) {
+    public void setJogadores(List<JogadorDTO> jogadores) {
         this.jogadores = jogadores;
     }
 

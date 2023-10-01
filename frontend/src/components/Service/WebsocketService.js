@@ -49,7 +49,7 @@ class WebsocketService {
             idPartida: id
         }
         this.stompClient.send("/game/partida/entrar/" + id, {}, JSON.stringify(obj));
-        this.subscriptionRoom = this.stompClient.subscribe('/game/partida/' + id, function (data) {
+        return this.subscriptionRoom = this.stompClient.subscribe('/game/partida/' + id, function (data) {
             callback(JSON.parse(data.body));
     
         });
@@ -66,7 +66,14 @@ class WebsocketService {
             });
         }
     };
-
+    selecionarCarta(idPartida, idJogador, idCarta){
+        let obj = {
+            idPartida: idPartida,
+            jogador: idJogador,
+            value: idCarta
+        }
+        this.stompClient.send("/game/partida/selecionarCarta/"+idPartida, {}, JSON.stringify(obj));
+    }
     carregarPartidas(){
         if (this.stompClient) {
             this.stompClient.send('/game/partidas', {}, {});

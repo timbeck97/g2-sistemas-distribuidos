@@ -16,11 +16,9 @@ public class PartidaController {
     @Autowired
     private GameService gameService;
 
-    @PostMapping("/{participante}")
+    @PostMapping("/")
     //@CrossOrigin(value = "*")
-    public ResponseEntity<PartidaDTO> createPartida(@PathVariable String participante){
-        Jogador j=new Jogador();
-        j.setNome(participante);
-        return ResponseEntity.ok().body(gameService.iniciaPartida(j));
+    public ResponseEntity<PartidaDTO> createPartida(){
+        return ResponseEntity.ok().body(gameService.iniciaPartida());
     }
 }

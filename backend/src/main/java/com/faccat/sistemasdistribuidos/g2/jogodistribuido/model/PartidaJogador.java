@@ -16,6 +16,8 @@ public class PartidaJogador {
     @ManyToOne
     private Jogador jogador;
 
+    private int pontos;
+
     public PartidaJogador() {
     }
 
@@ -46,5 +48,13 @@ public class PartidaJogador {
 
     public void setJogador(Jogador jogador) {
         this.jogador = jogador;
+    }
+
+    public int getPontos() {
+        return pontos;
+    }
+
+    public void setPontos(int pontos) {
+        this.pontos = pontos;
     }
 }
