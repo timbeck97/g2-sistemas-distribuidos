@@ -1,7 +1,7 @@
 version: "3.7"
 services:
   jogodistribuido_app1:
-    image: jogodistribuido
+    image: timbeck1997/jogodistribuido:latest
     container_name: jogodistribuido_8080
     build: ./
     restart: always
@@ -12,9 +12,10 @@ services:
     environment:
       - SERVER_PORT=8080
       - APP_NAME=app0(8080)
+      - DATABASE_HOST=database_postgres
 
   jogodistribuido_app2:
-    image: jogodistribuido
+    image: timbeck1997/jogodistribuido:latest
     container_name: jogodistribuido_8081
     build: .
     restart: always
@@ -25,9 +26,10 @@ services:
     environment:
       - SERVER_PORT=8081
       - APP_NAME=app1(8081)
+      - DATABASE_HOST=database_postgres
 
   jogodistribuido_app3:
-    image: jogodistribuido
+    image: timbeck1997/jogodistribuido:latest
     container_name: jogodistribuido_8082
     build: .
     restart: always
@@ -38,7 +40,9 @@ services:
     environment:
       - SERVER_PORT=8082
       - APP_NAME=app2(8082)
+      - DATABASE_HOST=database_postgres
   database_postgres:
+    container_name: database_postgres
     image: postgres
     restart: always
     ports:
@@ -47,6 +51,8 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=jogodistribuido
+    networks:
+      - jogodistribuido_network
 
   webserver:
     image: "nginx"
