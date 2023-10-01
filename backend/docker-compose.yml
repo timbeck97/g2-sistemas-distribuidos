@@ -41,9 +41,13 @@ services:
   database_postgres:
     image: postgres
     restart: always
+    ports:
+      - "5432:5432"
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=jogodistribuido
+
   webserver:
     image: "nginx"
     container_name: container-nginx
