@@ -25,6 +25,11 @@ public class Partida {
     @Temporal(TemporalType.TIMESTAMP)
     private Date hora;
 
+    @Column(columnDefinition = "TEXT")
+    private String cartasRodadaAtual;
+
+    private int quantidadeJogadas;
+
     public Partida() {
     }
 
@@ -66,5 +71,21 @@ public class Partida {
 
     public void setHora(Date hora) {
         this.hora = hora;
+    }
+
+    public String getCartasRodadaAtual() {
+        return cartasRodadaAtual;
+    }
+
+    public void setCartasRodadaAtual(String cartasRodadaAtual) {
+        this.cartasRodadaAtual = cartasRodadaAtual;
+    }
+
+    public int getQuantidadeJogadas() {
+        return quantidadeJogadas;
+    }
+
+    public void setQuantidadeJogadas(int quantidadeJogadas) {
+        this.quantidadeJogadas = quantidadeJogadas;
     }
 }

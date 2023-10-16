@@ -12,7 +12,7 @@ class WebsocketService {
     connect(){
         return new Promise((resolve, reject) => {
             if (this.tentativas > 5) return;
-            const client = Stomp.over(new SockJS('http://127.0.0.1:8080/sistemasdistribuidos'));
+            const client = Stomp.over(new SockJS('http://127.0.0.1:9090/sistemasdistribuidos'));
             client.connect({}, ()=>{
                 resolve();
             }, ()=>this.handle(), ()=>this.handleDisconnect());
@@ -39,9 +39,9 @@ class WebsocketService {
         console.log('Desconectado');
         setTimeout(() => {
             this.tentativas = this.tentativas + 1;
-            alert('desconectou o websocket')
-        // this.connect();
-        }, 5000);
+            //alert('desconectou o websocket')
+            this.connect();
+        }, 500);
     };
     entrarPartida(id, nomeJogador, callback){
         let obj = {

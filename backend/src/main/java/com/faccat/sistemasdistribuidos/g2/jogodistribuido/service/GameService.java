@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class GameService {
@@ -35,6 +36,7 @@ public class GameService {
         partida.setJogadores(0);
         partida.setSituacao(ESituacaoPartida.AGUARDANDO);
         partida.setHora(adicionaSegundos(new Date(),segundosInicioPartida));
+        partida.setCartasRodadaAtual(createNumbersCards(Arrays.asList(5,15,-20,30,25)));
         partida=partidaRepository.save(partida);
         return createPartidaDTO(partida);
 
@@ -87,26 +89,42 @@ public class GameService {
         dto.setIdPartida(partida.getId());
         dto.setJogadores(partidaJogadorRepository.findByPartidaId(partida.getId()));
         dto.setRodada(partida.getRodada());
-        dto.setCartas(getCards(Arrays.asList(5,15,-20,30,25)));
+        dto.setCartas(getCards(partida));
         dto.setSituacaoPartida(partida.getSituacao());
         dto.setHora(adicionaSegundos(partida.getHora(),segundosRodada*partida.getRodada()));
         return dto;
     }
-    private List<CardDTO> getCards(List<Integer> numeros){
-       List<CardDTO> cards=new ArrayList<>();
-        Collections.shuffle(numeros);
-          for (Integer numero : numeros) {
+    public List<CardDTO> getCards(Partida p){
+        List<CardDTO> cards=new ArrayList<>();
+        String[] cartas=p.getCartasRodadaAtual().split(",");
+        for (String carta : cartas) {
             CardDTO card=new CardDTO();
-            card.setValue(String.valueOf(numero));
+            card.setValue(carta);
             cards.add(card);
-          }
-          return cards;
+        }
+        return cards;
+    }
+    private String createNumbersCards(List<Integer> numeros){
+        Collections.shuffle(numeros);
+        return numeros.stream().map(Object::toString).collect(Collectors.joining(","));
+
     }
     public void salvarCartaEscolhida(CartaEscolhidaDTO card){
         PartidaJogador partidaJogador=partidaJogadorRepository.findByPartidaIdAndJogadorNome(card.getIdPartida(),card.getJogador());
         partidaJogador.setPontos(partidaJogador.getPontos()+Integer.parseInt(card.getValue()));
         partidaJogadorRepository.save(partidaJogador);
+        Partida p=partidaJogador.getPartida();
+        p.setQuantidadeJogadas(p.getQuantidadeJogadas()+1);
 
+        int qttJogadas=partidaJogadorRepository.countByPartidaId(p.getId());
+        if(p.getQuantidadeJogadas()==qttJogadas){
+            p.setRodada(p.getRodada()+1);
+            p.setQuantidadeJogadas(0);
+            p.setCartasRodadaAtual(createNumbersCards(Arrays.asList(5,15,-20,30,25)));
+            //p.setHora(adicionaSegundos(new Date(),segundosRodada*p.getRodada()));
+        }
+
+        partidaRepository.save(p);
 
     }
     public Date adicionaMinutos(Date data, int minutos){

@@ -32,43 +32,43 @@ public class GameSchedule {
     Integer quantidadeRodadas;
     @Autowired
     private GameService gameService;
-    @Scheduled(fixedDelay = 1000)
-    public void logicaGame(){
-
-        List<Partida> partidasEmAberto=partidaRepository.findPartidasAndamento(ESituacaoPartida.ANDAMENTO);
-        for (Partida partida : partidasEmAberto) {
-
-            //System.out.println("RODADA: "+partida.getRodada());
-            if(trocouRodada(partida)){
-                if(partida.getRodada()==quantidadeRodadas){
-                    partida.setSituacao(ESituacaoPartida.FINALIZADA);
-                    partida=partidaRepository.save(partida);
-                    RodadaDTO dto=gameService.getRodadaDTO(partida);
-                    simpleMessagingTemplate.convertAndSend("/game/partida/"+partida.getId(),dto);
-                    continue;
-                }
-                System.out.println("TROCOU RODADA");
-                partida.setRodada(partida.getRodada()+1);
-                partida=partidaRepository.save(partida);
-                RodadaDTO dto=gameService.getRodadaDTO(partida);
-                simpleMessagingTemplate.convertAndSend("/game/partida/"+partida.getId(),dto);
-            }
-        }
-        //
-    }
-    @Scheduled(fixedDelay = 1000)
-    public void verificaInicio(){
-
-        List<Partida> partidasEmAberto=partidaRepository.findPartidasAndamento(ESituacaoPartida.AGUARDANDO);
-        for (Partida partida : partidasEmAberto) {
-            if(partida.getHora().getTime()<=new Date().getTime()){
-                partida.setSituacao(ESituacaoPartida.ANDAMENTO);
-                partidaRepository.save(partida);
-            }
-
-        }
-
-    }
+//    @Scheduled(fixedDelay = 1000)
+//    public void logicaGame(){
+//
+//        List<Partida> partidasEmAberto=partidaRepository.findPartidasAndamento(ESituacaoPartida.ANDAMENTO);
+//        for (Partida partida : partidasEmAberto) {
+//
+//            //System.out.println("RODADA: "+partida.getRodada());
+//            if(trocouRodada(partida)){
+//                if(partida.getRodada()==quantidadeRodadas){
+//                    partida.setSituacao(ESituacaoPartida.FINALIZADA);
+//                    partida=partidaRepository.save(partida);
+//                    RodadaDTO dto=gameService.getRodadaDTO(partida);
+//                    simpleMessagingTemplate.convertAndSend("/game/partida/"+partida.getId(),dto);
+//                    continue;
+//                }
+//                System.out.println("TROCOU RODADA");
+//                partida.setRodada(partida.getRodada()+1);
+//                partida=partidaRepository.save(partida);
+//                RodadaDTO dto=gameService.getRodadaDTO(partida);
+//                simpleMessagingTemplate.convertAndSend("/game/partida/"+partida.getId(),dto);
+//            }
+//        }
+//        //
+//    }
+//    @Scheduled(fixedDelay = 1000)
+//    public void verificaInicio(){
+//
+//        List<Partida> partidasEmAberto=partidaRepository.findPartidasAndamento(ESituacaoPartida.AGUARDANDO);
+//        for (Partida partida : partidasEmAberto) {
+//            if(partida.getHora().getTime()<=new Date().getTime()){
+//                partida.setSituacao(ESituacaoPartida.ANDAMENTO);
+//                partidaRepository.save(partida);
+//            }
+//
+//        }
+//
+//    }
 
     private boolean trocouRodada(Partida p){
         Date horaProxRodada=gameService.adicionaSegundos(p.getHora(),p.getRodada()*segundosRodada);

@@ -17,4 +17,6 @@ public interface PartidaJogadorRepository extends JpaRepository<PartidaJogador, 
     List<JogadorDTO> findByPartidaId(@Param("partidaId") long partidaId);
 
     PartidaJogador findByPartidaIdAndJogadorNome(long partidaId, String jogadorNome);
+
+    int countByPartidaId(long partidaId);
 }

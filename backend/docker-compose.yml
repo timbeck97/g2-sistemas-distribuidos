@@ -1,7 +1,8 @@
 version: "3.7"
 services:
   jogodistribuido_app1:
-    image: timbeck1997/jogodistribuido:latest
+    #    image: timbeck1997/jogodistribuido:latest
+    image: jogodistribuido
     container_name: jogodistribuido_8080
     build: ./
     restart: always
@@ -15,7 +16,8 @@ services:
       - DATABASE_HOST=database_postgres
 
   jogodistribuido_app2:
-    image: timbeck1997/jogodistribuido:latest
+    #    image: timbeck1997/jogodistribuido:latest
+    image: jogodistribuido
     container_name: jogodistribuido_8081
     build: .
     restart: always
@@ -29,7 +31,8 @@ services:
       - DATABASE_HOST=database_postgres
 
   jogodistribuido_app3:
-    image: timbeck1997/jogodistribuido:latest
+#    image: timbeck1997/jogodistribuido:latest
+    image: jogodistribuido
     container_name: jogodistribuido_8082
     build: .
     restart: always
@@ -68,5 +71,17 @@ services:
       - "jogodistribuido_app1"
       - "jogodistribuido_app2"
       - "jogodistribuido_app3"
+#  webserver:
+#    image: haproxy:2.3
+#    restart: always
+#    ports:
+#      - "9090:9090"
+#    volumes:
+#      - ./haproxy:/usr/local/etc/haproxy
+#      - "./haproxy/cors.lua:/etc/haproxy/cors.lua"
+#    networks:
+#      - jogodistribuido_network
+
 networks:
   jogodistribuido_network:
+    driver: bridge

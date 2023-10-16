@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import WebSocketModal from "../Modal-login/Modal-login";
 import "./Page-login.css";
 import '../Container-cards/Container-cards.css'
@@ -8,6 +8,8 @@ import { Button } from 'react-bootstrap';
 import Rooms from "../Rooms/Rooms";
 import WebsocketService from "../Service/WebsocketService";
 let webSocket=null;
+let interval=null;
+let intervalPartida=null;
 function PageLogin() {
   const [showModal, setShowModal] = useState(false);
   const [connected, setConnected] = useState(false);
@@ -15,56 +17,98 @@ function PageLogin() {
   const [view, setView]= useState("ROOMS");
   const [partidas, setPartidas]= useState([]);
   const [cards, setCards]= useState([]);
-  const [rodada, setRodada]= useState({});
+  const [rodada, setRodada]= useState({rodada:0});
   const [chosenCard, setChosenCard]= useState(null);
+
+  const prevRodadaRef = useRef();
+
   useEffect(() => {
-    webSocket=new WebsocketService();
-    webSocket.connect().then(()=>{
-      webSocket.subscribeToPartidas((partidas)=>{
-        console.log('----------> PARTIDAS: ',partidas);
-        setPartidas(partidas);
-      })
-      webSocket.carregarPartidas();
-    })
-   
-   return () => {
-      if(webSocket){
-        webSocket.disconnect();
-      }
-   }
+    initInterval();
+
+    return () => {
+      clearInterval(interval)
+      clearInterval(intervalPartida)
+    };
   },[])
+  useEffect(() => {
+    prevRodadaRef.current = rodada;
+  },[rodada])
   const criarPartida = () => {
-    fetch('http://127.0.0.1:8080/partida/', {
+    fetch('http://127.0.0.1:8080/partida', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log('Success:', data);
-        webSocket.carregarPartidas();
         entrarPartida(data.id);
+        clearInterval(interval);
       })
       
   }
-  const entrarPartida = (id) => {
-    let partidaSubscribe=webSocket.entrarPartida(id, userName, (novaRodada)=>{
-      console.log('----------> partida: ',novaRodada)
-      setRodada(novaRodada);
-      setCards(novaRodada.cartas);
-      setView('GAME');
-      if(novaRodada.rodada!==rodada.rodada){
-        setChosenCard(null);
-      }
-      if(novaRodada.situacaoPartida==='FINALIZADA'){
-        alert('Partida encerrada, voce fez '+novaRodada.jogadores.find(x=>x.nome===userName).pontos+' pontos');
-        partidaSubscribe.unsubscribe();
-        setView('ROOMS');
-        setRodada({});
-        setCards([]);
-        webSocket.carregarPartidas();
-      }
+  const initInterval = () => {
+    interval=setInterval(()=>{
+      carregarPartidas();
+    },1000);
+  }
+  const initPartidaInterval = (id) => {
+    intervalPartida=setInterval(()=>{carregarDadosPartida(id)},1000);
+    
+  }
+  const carregarPartidas = () => {
+    fetch('http://127.0.0.1:8080/partida', {
+      method: 'GET',
+      headers: {'Content-Type': 'application/json'},
+      
     })
-    console.log(partidaSubscribe);
+      .then((response) => response.json())
+      .then((data) => {
+        setPartidas(data);
+      })
+  }
+  const carregarDadosPartida = (id) => {
+    fetch('http://127.0.0.1:8080/partida/'+id, {
+      method: 'GET',
+      headers: {'Content-Type': 'application/json'},
+      
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        const prevRodada = prevRodadaRef.current;
+        setRodada(data);
+        
+   
+
+        if(prevRodada.situacaoPartida==='ANDAMENTO'){
+            console.log('PARTIDA EM ANDAMENTO AGORA');
+            setCards(data.cartas);
+            if(prevRodada.rodada!==data.rodada){
+              console.log('RODADA MUDOU');
+              setCards(data.cartas);
+              setChosenCard(null);
+            }
+        }
+    
+      })
+  }
+  const entrarPartida = (id) => {
+    fetch('http://127.0.0.1:8080/partida/entrar/'+id, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body:JSON.stringify({
+        idPartida:id,
+        nomeParticipante:userName
+      })
+    })
+      .then((response) => response.json())
+      .then((data) => {
+          setView('GAME');
+          setRodada(data);
+          setCards(data.cartas);
+
+          clearInterval(interval);
+          initPartidaInterval(id)
+      })
+   
   }
   
   const handleConnect = (name) => {
@@ -72,9 +116,25 @@ function PageLogin() {
     setUserName(name);
   };
   const onSelectCard = (text) => {
-    webSocket.selecionarCarta(rodada.idPartida, userName, text)
-    setChosenCard(text);
-    console.log('----------> escolhida: ',text);
+    setTimeout(()=>{
+      fetch('http://127.0.0.1:8080/partida/jogar', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body:JSON.stringify({
+          idPartida:rodada.idPartida,
+          jogador:userName,
+          value:text
+        })
+  
+  
+      })
+        .then((response) =>{} )
+        .then((data) => {
+          console.log('Success:', data);
+        })
+      setChosenCard(text);
+    },1000);
+    
   }
   if (!connected) {
     return (
@@ -94,7 +154,8 @@ function PageLogin() {
   return (
     <div className="connected">
       <p className="user">Conectado como: {userName}</p> 
-      {view === "ROOMS" ?<Rooms partidas={partidas} onCriarPartida={()=>criarPartida()} entrarPartida={(id)=>entrarPartida(id)}/> :  <Container cards={cards} chosenCard={chosenCard} rodada={rodada} onSelectCard={(text)=>onSelectCard(text)} />}
+      <button onClick={()=>console.log(rodada)}>LOG RODADA</button>
+      {view === "ROOMS" ?<Rooms partidas={partidas} onCriarPartida={()=>criarPartida()} entrarPartida={(id)=>entrarPartida(id)}/> :  <Container cards={cards} chosenCard={chosenCard} rodada={{}} onSelectCard={(text)=>onSelectCard(text)} />}
     
     </div>
   );
