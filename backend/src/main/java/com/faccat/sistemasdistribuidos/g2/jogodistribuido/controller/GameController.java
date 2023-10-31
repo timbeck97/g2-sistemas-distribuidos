@@ -33,13 +33,13 @@ public class GameController {
 
 
 
-    @MessageMapping("/game/partidas")
-    @SendTo("/game/partidas")
-    public List<PartidaDTO> connect(SimpMessageHeaderAccessor headerAccessor){
-        System.out.println("CONSULTOU AS PARTIDAS CRIADAS");
-        return gameService.findPartidasBySituacao(ESituacaoPartida.AGUARDANDO);
-
-    }
+//    @MessageMapping("/game/partidas")
+//    @SendTo("/game/partidas")
+//    public List<PartidaDTO> connect(SimpMessageHeaderAccessor headerAccessor){
+//        System.out.println("CONSULTOU AS PARTIDAS CRIADAS");
+//        return gameService.findPartidasBySituacao(ESituacaoPartida.AGUARDANDO);
+//
+//    }
 
 //    @MessageMapping("/game/partida/entrar/{idPartida}")
 //    @SendTo("/game/partida/{idPartida}")
@@ -50,28 +50,28 @@ public class GameController {
 //        return gameService.createPartidaDTO(partida);
 //
 //    }
-    @MessageMapping("/game/partida/entrar/{idPartida}")
-    @SendTo("/game/partida/{idPartida}")
-    public PartidaDTO subscribePartida(@Payload InscreverPartidaDTO subscriber, SimpMessageHeaderAccessor headerAccessor){
-        //System.out.println("Jogador: "+subscriber.getNomeParticipante()+" entrou na partida "+subscriber.getIdPartida());
-        Partida partida=gameService.entrarPartida(subscriber);
-        simpleMessagingTemplate.convertAndSend("/game/partidas",gameService.findPartidasBySituacao(ESituacaoPartida.AGUARDANDO));
-        return gameService.createPartidaDTO(partida);
-
-    }
-    @MessageMapping("/game/partida/{idPartida}")
-    @SendTo("/game/partida/{idPartida}")
-    public RodadaDTO gereciaRodadas(@Payload RodadaDTO rodada, SimpMessageHeaderAccessor headerAccessor){
-        return rodada;
-    }
-    @MessageMapping("/game/partida/selecionarCarta/{idPartida}")
-    public void sendCard(@Payload CartaEscolhidaDTO card, SimpMessageHeaderAccessor headerAccessor){
-        System.out.println("PARTIDA: "+card.getIdPartida());
-        System.out.println("JOGADOR: "+card.getJogador());
-        System.out.println("CARTA: "+card.getValue());
-        gameService.salvarCartaEscolhida(card);
-
-
-    }
+//    @MessageMapping("/game/partida/entrar/{idPartida}")
+//    @SendTo("/game/partida/{idPartida}")
+//    public PartidaDTO subscribePartida(@Payload InscreverPartidaDTO subscriber, SimpMessageHeaderAccessor headerAccessor){
+//        //System.out.println("Jogador: "+subscriber.getNomeParticipante()+" entrou na partida "+subscriber.getIdPartida());
+//        Partida partida=gameService.entrarPartida(subscriber);
+//        simpleMessagingTemplate.convertAndSend("/game/partidas",gameService.findPartidasBySituacao(ESituacaoPartida.AGUARDANDO));
+//        return gameService.createPartidaDTO(partida);
+//
+//    }
+//    @MessageMapping("/game/partida/{idPartida}")
+//    @SendTo("/game/partida/{idPartida}")
+//    public RodadaDTO gereciaRodadas(@Payload RodadaDTO rodada, SimpMessageHeaderAccessor headerAccessor){
+//        return rodada;
+//    }
+//    @MessageMapping("/game/partida/selecionarCarta/{idPartida}")
+//    public void sendCard(@Payload CartaEscolhidaDTO card, SimpMessageHeaderAccessor headerAccessor){
+//        System.out.println("PARTIDA: "+card.getIdPartida());
+//        System.out.println("JOGADOR: "+card.getJogador());
+//        System.out.println("CARTA: "+card.getValue());
+//        gameService.salvarCartaEscolhida(card);
+//
+//
+//    }
 
 }

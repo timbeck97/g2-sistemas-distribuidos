@@ -12,7 +12,7 @@ public class RodadaDTO {
     private List<JogadorDTO> jogadores;
     private int rodada;
 
-    private Date hora;
+    //private Date hora;
 
     private List<CardDTO> cartas;
 
@@ -50,13 +50,13 @@ public class RodadaDTO {
         this.cartas = cartas;
     }
 
-    public Date getHora() {
-        return hora;
-    }
-
-    public void setHora(Date hora) {
-        this.hora = hora;
-    }
+//    public Date getHora() {
+//        return hora;
+//    }
+//
+//    public void setHora(Date hora) {
+//        this.hora = hora;
+//    }
 
     public ESituacaoPartida getSituacaoPartida() {
         return situacaoPartida;

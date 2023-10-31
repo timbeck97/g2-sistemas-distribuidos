@@ -12,6 +12,5 @@ import java.util.List;
 @Repository
 public interface PartidaRepository extends JpaRepository<Partida, Long> {
 
-    @Query("select p from Partida p where p.situacao=:situacao")
-    List<Partida> findPartidasAndamento(@Param("situacao") ESituacaoPartida situacao);
+
 }

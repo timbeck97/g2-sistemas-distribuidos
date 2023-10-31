@@ -18,6 +18,7 @@ public class Partida {
     @Enumerated(EnumType.STRING)
     private ESituacaoPartida situacao;
 
+    @Column(columnDefinition = "integer default 1")
     private int rodada;
 
     private int jogadores;

@@ -30,12 +30,15 @@ public class GameService {
     @Value("${game.quantidade.maxima.jogadores}")
     Integer quantidadeMinimaJogadores;
 
+    @Value("${game.quantidade.rodadas}")
+    Integer quantidadeRodadas;
+
     public PartidaDTO iniciaPartida(){
         System.out.println("CRIANDO PARTIDA");
         Partida partida=new Partida();
         partida.setJogadores(0);
         partida.setSituacao(ESituacaoPartida.AGUARDANDO);
-        partida.setHora(adicionaSegundos(new Date(),segundosInicioPartida));
+        //partida.setHora(adicionaSegundos(new Date(),segundosInicioPuartida));
         partida.setCartasRodadaAtual(createNumbersCards(Arrays.asList(5,15,-20,30,25)));
         partida=partidaRepository.save(partida);
         return createPartidaDTO(partida);
@@ -56,8 +59,20 @@ public class GameService {
         partidaJogadorRepository.save(partidaJogador);
         return partida;
     }
-    public List<PartidaDTO> findPartidasBySituacao(ESituacaoPartida situacao){
-        List<Partida> partidas=partidaRepository.findPartidasAndamento(situacao);
+    public Partida sairPartida(Long idPartida, Long idUser){
+        Jogador jogador=jogadorRepository.findById(idUser).get();
+        Partida partida=partidaRepository.findById(idPartida).get();
+        partida.setJogadores(partida.getJogadores()-1);
+        partida=partidaRepository.save(partida);
+        PartidaJogador partidaJogador=partidaJogadorRepository.findByPartidaAndJogador(partida,jogador);
+        partidaJogadorRepository.delete(partidaJogador);
+        return partida;
+    }
+    public List<PartidaDTO> findPartidasBySituacao(String userName){
+        Jogador jogador=new Jogador();
+        jogador.setNome(userName);
+        jogador=getJogador(jogador);
+        List<Partida> partidas=partidaJogadorRepository.findByJogadorAndSituacao(jogador);
         List<PartidaDTO> dtos=new ArrayList<>();
         for (Partida partida : partidas) {
             dtos.add(createPartidaDTO(partida));
@@ -67,7 +82,7 @@ public class GameService {
     public PartidaDTO createPartidaDTO(Partida partida){
         PartidaDTO dto=new PartidaDTO();
         dto.setId(partida.getId());
-        dto.setSituacao(partida.getSituacao());
+        dto.setSituacaoPartida(partida.getSituacao());
         dto.setHora(partida.getHora());
         dto.setJogadores(partidaJogadorRepository.findByPartidaId(partida.getId()));
         return dto;
@@ -91,7 +106,7 @@ public class GameService {
         dto.setRodada(partida.getRodada());
         dto.setCartas(getCards(partida));
         dto.setSituacaoPartida(partida.getSituacao());
-        dto.setHora(adicionaSegundos(partida.getHora(),segundosRodada*partida.getRodada()));
+        //dto.setHora(adicionaSegundos(partida.getHora(),segundosRodada*partida.getRodada()));
         return dto;
     }
     public List<CardDTO> getCards(Partida p){
@@ -110,6 +125,7 @@ public class GameService {
 
     }
     public void salvarCartaEscolhida(CartaEscolhidaDTO card){
+        System.out.println("SALVANDO CARTA: "+card.getValue());
         PartidaJogador partidaJogador=partidaJogadorRepository.findByPartidaIdAndJogadorNome(card.getIdPartida(),card.getJogador());
         partidaJogador.setPontos(partidaJogador.getPontos()+Integer.parseInt(card.getValue()));
         partidaJogadorRepository.save(partidaJogador);
@@ -118,10 +134,14 @@ public class GameService {
 
         int qttJogadas=partidaJogadorRepository.countByPartidaId(p.getId());
         if(p.getQuantidadeJogadas()==qttJogadas){
-            p.setRodada(p.getRodada()+1);
-            p.setQuantidadeJogadas(0);
-            p.setCartasRodadaAtual(createNumbersCards(Arrays.asList(5,15,-20,30,25)));
-            //p.setHora(adicionaSegundos(new Date(),segundosRodada*p.getRodada()));
+            if(p.getRodada()==quantidadeRodadas){
+                p.setSituacao(ESituacaoPartida.FINALIZADA);
+            }else{
+                p.setRodada(p.getRodada()+1);
+                p.setQuantidadeJogadas(0);
+                p.setCartasRodadaAtual(createNumbersCards(Arrays.asList(5,15,-20,30,25)));
+            }
+
         }
 
         partidaRepository.save(p);

@@ -27,8 +27,8 @@ public class PartidaController {
     private PartidaRepository partidaRepository;
 
     @GetMapping
-    public List<PartidaDTO> getPartidas(){
-        return gameService.findPartidasBySituacao(ESituacaoPartida.AGUARDANDO);
+    public List<PartidaDTO> getPartidas(@RequestParam String jogador){
+        return gameService.findPartidasBySituacao(jogador);
     }
 
     @PostMapping()
@@ -39,6 +39,12 @@ public class PartidaController {
     @PostMapping("/entrar/{id}")
     public ResponseEntity<PartidaDTO> entrarPartida(@PathVariable Long id, @RequestBody InscreverPartidaDTO subscriber ){
         Partida partida=gameService.entrarPartida(subscriber);
+        System.out.println("ENTROU NA PARTIDA: "+subscriber.getNomeParticipante());
+        return ResponseEntity.ok().body(gameService.createPartidaDTO(partida));
+    }
+    @PostMapping("/sair/{id}/user/{user}")
+    public ResponseEntity<PartidaDTO> sairPartida(@PathVariable Long id, @PathVariable Long user){
+        Partida partida=gameService.sairPartida(id, user);
         return ResponseEntity.ok().body(gameService.createPartidaDTO(partida));
     }
     @GetMapping("/{id}")

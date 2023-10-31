@@ -15,7 +15,7 @@ const WebSocketModal = ({ show, onHide, onConnect }) => {
   return (
     <Modal show={show} onHide={onHide}>
       <Modal.Header closeButton>
-        <Modal.Title>WebSocket Connection</Modal.Title>
+        <Modal.Title>Nome do Jogador</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form.Group controlId="name">

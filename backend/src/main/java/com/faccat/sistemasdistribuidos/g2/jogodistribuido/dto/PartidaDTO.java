@@ -10,7 +10,7 @@ import java.util.List;
 public class PartidaDTO {
     private long id;
 
-    private ESituacaoPartida situacao;
+    private ESituacaoPartida situacaoPartida;
 
     private Date hora;
     private List<JogadorDTO> jogadores;
@@ -31,12 +31,12 @@ public class PartidaDTO {
         this.jogadores = jogadores;
     }
 
-    public ESituacaoPartida getSituacao() {
-        return situacao;
+    public ESituacaoPartida getSituacaoPartida() {
+        return situacaoPartida;
     }
 
-    public void setSituacao(ESituacaoPartida situacao) {
-        this.situacao = situacao;
+    public void setSituacaoPartida(ESituacaoPartida situacaoPartida) {
+        this.situacaoPartida = situacaoPartida;
     }
 
     public Date getHora() {
