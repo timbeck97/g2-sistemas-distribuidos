@@ -24,6 +24,8 @@ public interface PartidaJogadorRepository extends JpaRepository<PartidaJogador, 
 
     @Query("select distinct(pj.partida) from PartidaJogador pj where (pj.partida.situacao='ANDAMENTO' and pj.jogador=:jogador) or pj.partida.situacao='AGUARDANDO'")
     List<Partida> findByJogadorAndSituacao(@Param("jogador") Jogador jogador);
+    @Query("select distinct(pj.partida) from PartidaJogador pj where pj.partida.situacao='ANDAMENTO' and pj.jogador=:jogador")
+    Partida findByJogadorAberta(@Param("jogador") Jogador jogador);
 
     PartidaJogador findByPartidaAndJogador(Partida partida, Jogador jogador);
 }

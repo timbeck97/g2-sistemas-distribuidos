@@ -7,7 +7,7 @@ function Cards({onSelectCard, card, chosenCard}) {
   const [isChosen, setIsChosen] = useState(false);
   const [value, setValue] = useState('');
   useEffect(() => {
-
+    
     setIsChosen(chosenCard!==null);
     if(!chosenCard){
       setIsBlocked(false);

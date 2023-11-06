@@ -79,6 +79,14 @@ public class GameService {
         }
         return dtos;
     }
+    public PartidaDTO findPartidaAberta(String userName){
+        Jogador jogador=new Jogador();
+        jogador.setNome(userName);
+        jogador=getJogador(jogador);
+        Partida partida=partidaJogadorRepository.findByJogadorAberta(jogador);
+        if(partida==null)return new PartidaDTO();
+        return createPartidaDTO(partida);
+    }
     public PartidaDTO createPartidaDTO(Partida partida){
         PartidaDTO dto=new PartidaDTO();
         dto.setId(partida.getId());

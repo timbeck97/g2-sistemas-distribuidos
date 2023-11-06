@@ -23,14 +23,15 @@ function PageLogin() {
   const [rodada, setRodada]= useState({rodada:0});
   const [chosenCard, setChosenCard]= useState(null);
   const [openWinners, setOpenWinners]= useState(false);
+  const [partidaAberta, setPartidaAberta]= useState({});
 
   const prevRodadaRef = useRef();
-  const port=9090;
+  const port=8080;
   useEffect(() => {
     if(userName!==''){
       initInterval();
     }
-
+    consultaPartidaEmAberto();
     return () => {
       clearInterval(interval)
       clearInterval(intervalPartida)
@@ -68,14 +69,6 @@ function PageLogin() {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log('partidas: ',data);
-        let partidaAtiva=data.find((partida)=>partida.situacaoPartida==='ANDAMENTO');
-        if(partidaAtiva && intervalPartida!==null){
-          setShowModalReconect(true);
-          clearInterval(interval)
-          clearInterval(intervalPartida)
-        }
-
         setPartidas(data);
       })
   }
@@ -151,6 +144,8 @@ function PageLogin() {
 
   };
   const onSelectCard = (text) => {
+    setChosenCard(text);
+
     setTimeout(()=>{
       fetch(`http://127.0.0.1:${port}/partida/jogar`, {
         method: 'POST',
@@ -160,21 +155,41 @@ function PageLogin() {
           jogador:userName,
           value:text
         })
-  
+
   
       })
         .then((response) =>{} )
         .then((data) => {
           console.log('Success:', data);
         })
-      setChosenCard(text);
+      
     },1000);
     
   }
+  const consultaPartidaEmAberto = () => {
+    fetch(`http://127.0.0.1:${port}/partida/aberta?jogador=${userName}`, {
+      method: 'GET',
+      headers: {'Content-Type': 'application/json'},
+      
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('partida aberta: ',data);
+        if(data.id){
+          setPartidaAberta(data);
+          setShowModalReconect(true);
+          clearInterval(interval)
+          clearInterval(intervalPartida)
+        }
+    
+      })
+  }
   const onReconect = () => {
     setShowModalReconect(false);
-    let partida=partidas.find((partida)=>partida.situacaoPartida==='ANDAMENTO');
-    entrarPartida(partida.id);
+    setView('GAME');
+    carregarDadosPartida(partidaAberta.id)
+    initPartidaInterval(partidaAberta.id)
+    
   }
   const onRecuseReconect = () => {
     sairPartida();

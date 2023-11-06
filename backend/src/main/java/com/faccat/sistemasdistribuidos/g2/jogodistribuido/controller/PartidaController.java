@@ -30,6 +30,10 @@ public class PartidaController {
     public List<PartidaDTO> getPartidas(@RequestParam String jogador){
         return gameService.findPartidasBySituacao(jogador);
     }
+    @GetMapping("/aberta")
+    public PartidaDTO getPartidaAberta(@RequestParam String jogador){
+        return gameService.findPartidaAberta(jogador);
+    }
 
     @PostMapping()
     public ResponseEntity<PartidaDTO> createPartida(){
