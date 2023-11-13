@@ -1,138 +1,136 @@
 version: "3.7"
 services:
-  jogodistribuido_app1:
-    #    image: timbeck1997/jogodistribuido:latest
-    image: jogodistribuido
-    container_name: jogodistribuido_8080
-    build: ./
-    restart: always
-    ports:
-      - "8080:8080"
-    networks:
-      - jogodistribuido_network
-    environment:
-      - SERVER_PORT=8080
-      - APP_NAME=app0(8080)
-      - DATABASE_HOST=192.168.0.10
-      - PROFILE=prod
+    jogodistribuido_app1:
+        image: timbeck1997/jogodistribuido:latest
+        # image: jogodistribuido
+        container_name: jogodistribuido_8080
+        # build: ./
+        restart: always
+        ports:
+            - "8080:8080"
+        networks:
+            - jogodistribuido_network
+        environment:
+            - SERVER_PORT=8080
+            - APP_NAME=app0(8080)
+            - DATABASE_HOST=192.168.0.10
+            - PROFILE=prod
 
-  jogodistribuido_app2:
-    #    image: timbeck1997/jogodistribuido:latest
-    image: jogodistribuido
-    container_name: jogodistribuido_8081
-    build: .
-    restart: always
-    ports:
-      - "8081:8081"
-    networks:
-      jogodistribuido_network:
-        ipv4_address: 192.168.0.11
-    environment:
-      - SERVER_PORT=8081
-      - APP_NAME=app1(8081)
-      - DATABASE_HOST=192.168.0.10
-      - PROFILE=prod
+    jogodistribuido_app2:
+        image: timbeck1997/jogodistribuido:latest
+        # image: jogodistribuido
+        container_name: jogodistribuido_8081
+        # build: .
+        restart: always
+        ports:
+            - "8081:8081"
+        networks:
+            jogodistribuido_network:
+                ipv4_address: 192.168.0.11
+        environment:
+            - SERVER_PORT=8081
+            - APP_NAME=app1(8081)
+            - DATABASE_HOST=192.168.0.10
+            - PROFILE=prod
 
-  jogodistribuido_app3:
-#    image: timbeck1997/jogodistribuido:latest
-    image: jogodistribuido
-    container_name: jogodistribuido_8082
-    build: .
-    restart: always
-    ports:
-      - "8082:8082"
-    networks:
-      jogodistribuido_network:
-        ipv4_address: 192.168.0.12
-    environment:
-      - SERVER_PORT=8082
-      - APP_NAME=app2(8082)
-      - DATABASE_HOST=192.168.0.10
-      - PROFILE=prod
-  management1:
-    image: container-registry.oracle.com/mysql/community-cluster
-    container_name: management1
-    networks:
-      jogodistribuido_network:
-        ipv4_address: 192.168.0.2
-    command: ndb_mgmd
-    #    docker container exec -it management1 ndb_mgm   <-- para entrar no mangager dos clusters mysql
-  mysqlNode1:
-    image: container-registry.oracle.com/mysql/community-cluster
-    container_name: mysqlNode1
-    networks:
-      jogodistribuido_network:
-        ipv4_address: 192.168.0.3
-    command: ndbd
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-    volumes:
-      - "./script/script.sql:/docker-entrypoint-initdb.d/1.sql"
-  mysqlNode2:
-    image: container-registry.oracle.com/mysql/community-cluster
-    container_name: mysqlNode2
-    networks:
-      jogodistribuido_network:
-        ipv4_address: 192.168.0.4
-    command: ndbd
-  mysqlServer:
-    image: container-registry.oracle.com/mysql/community-cluster
-    container_name: mysqlServer
-    networks:
-      jogodistribuido_network:
-        ipv4_address: 192.168.0.10
-    command: mysqld
-    volumes:
-      - "./script/script.sql:/docker-entrypoint-initdb.d/1.sql"
-    ports:
-      - "3306:3306"
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-    #    MYSQL_RANDOM_ROOT_PASSWORD: true
-    # necessario realizar os passos abaixo (primeiro inicia os nodos musql, conecta no servidor central e cira o usuario tim e da todas permissoes
+    jogodistribuido_app3:
+        image: timbeck1997/jogodistribuido:latest
+        # image: jogodistribuido
+        container_name: jogodistribuido_8082
+        # build: .
+        restart: always
+        ports:
+            - "8082:8082"
+        networks:
+            jogodistribuido_network:
+                ipv4_address: 192.168.0.12
+        environment:
+            - SERVER_PORT=8082
+            - APP_NAME=app2(8082)
+            - DATABASE_HOST=192.168.0.10
+            - PROFILE=prod
+    management1:
+        image: container-registry.oracle.com/mysql/community-cluster
+        container_name: management1
+        networks:
+            jogodistribuido_network:
+                ipv4_address: 192.168.0.2
+        command: ndb_mgmd
+        #    docker container exec -it management1 ndb_mgm   <-- para entrar no mangager dos clusters mysql
+    mysqlNode1:
+        image: container-registry.oracle.com/mysql/community-cluster
+        container_name: mysqlNode1
+        networks:
+            jogodistribuido_network:
+                ipv4_address: 192.168.0.3
+        command: ndbd
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+        volumes:
+            - "./script/script.sql:/docker-entrypoint-initdb.d/1.sql"
+    mysqlNode2:
+        image: container-registry.oracle.com/mysql/community-cluster
+        container_name: mysqlNode2
+        networks:
+            jogodistribuido_network:
+                ipv4_address: 192.168.0.4
+        command: ndbd
+    mysqlServer:
+        image: container-registry.oracle.com/mysql/community-cluster
+        container_name: mysqlServer
+        networks:
+            jogodistribuido_network:
+                ipv4_address: 192.168.0.10
+        command: mysqld
+        volumes:
+            - "./script/script.sql:/docker-entrypoint-initdb.d/1.sql"
+        ports:
+            - "3306:3306"
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+        #    MYSQL_RANDOM_ROOT_PASSWORD: true
+        # necessario realizar os passos abaixo (primeiro inicia os nodos musql, conecta no servidor central e cira o usuario tim e da todas permissoes
+        # docker compose up management1 mysqlNode1 mysqlNode2 mysqlServer -d
+        # docker logs mysqlServer 2>&1 | grep PASSWORD
+        # docker exec -it mysqlServer mysql -utim -p
+        #CREATE USER 'tim'@'%' IDENTIFIED BY 'tim';
+        #GRANT ALL PRIVILEGES ON *.* TO 'tim'@'%';
+        #FLUSH PRIVILEGES;
+
+    # docker network create jogodistribuido_network --subnet=192.168.0.0/16
+
+    #  database_postgres:
+    #    container_name: database_postgres
+    #    image: postgres
+    #    restart: always
+    #    ports:
+    #      - "5432:5432"
+    #    environment:
+    #      - POSTGRES_USER=postgres
+    #      - POSTGRES_PASSWORD=postgres
+    #      - POSTGRES_DB=jogodistribuido
+    #    networks:
+    #      jogodistribuido_network:
+    #        ipv4_address: 192.168.0.13
+
     # docker compose up management1 mysqlNode1 mysqlNode2 mysqlServer -d
-    # docker logs mysqlServer 2>&1 | grep PASSWORD
-    # docker exec -it mysqlServer mysql -utim -p
-    #CREATE USER 'tim'@'%' IDENTIFIED BY 'tim';
-    #GRANT ALL PRIVILEGES ON *.* TO 'tim'@'%';
-    #FLUSH PRIVILEGES;
+    # docker compose up jogodistribuido_app1 jogodistribuido_app2 jogodistribuido_app3
+    # docker compose up webserver -d
 
-
-# docker network create jogodistribuido_network --subnet=192.168.0.0/16
-
-#  database_postgres:
-#    container_name: database_postgres
-#    image: postgres
-#    restart: always
-#    ports:
-#      - "5432:5432"
-#    environment:
-#      - POSTGRES_USER=postgres
-#      - POSTGRES_PASSWORD=postgres
-#      - POSTGRES_DB=jogodistribuido
-#    networks:
-#      jogodistribuido_network:
-#        ipv4_address: 192.168.0.13
-
-
-  # docker compose up management1 mysqlNode1 mysqlNode2 mysqlServer -d
-  # docker compose up jogodistribuido_app1 jogodistribuido_app2 jogodistribuido_app3
-  # docker compose up webserver -d
-
-  webserver:
-    image: "nginx"
-    container_name: container-nginx
-    ports:
-      - "9090:9090"
-    volumes:
-      - ./nginx:/etc/nginx/conf.d
-    command: [nginx-debug, '-g', 'daemon off;']
-    networks:
-      jogodistribuido_network:
-    depends_on:
-      - "jogodistribuido_app1"
-      - "jogodistribuido_app2"
-      - "jogodistribuido_app3"
+    webserver:
+        image: "nginx"
+        container_name: container-nginx
+        ports:
+            - "9090:9090"
+        volumes:
+            - ./nginx:/etc/nginx/conf.d
+        command: [nginx-debug, "-g", "daemon off;"]
+        networks:
+            jogodistribuido_network:
+        depends_on:
+            - "jogodistribuido_app1"
+            - "jogodistribuido_app2"
+            - "jogodistribuido_app3"
 #  webserver:
 #    image: haproxy:2.3
 #    restart: always
@@ -145,5 +143,5 @@ services:
 #      - jogodistribuido_network
 
 networks:
-  jogodistribuido_network:
-    external: true
+    jogodistribuido_network:
+        external: true
