@@ -144,13 +144,13 @@ public class GameService {
 
         int qttJogadas=partidaJogadorRepository.countByPartidaId(p.getId());
         if(p.getQuantidadeJogadas()==qttJogadas){
-            p.setRodada(p.getRodada()+1);
             if(p.getRodada()==quantidadeRodadas){
                 p.setSituacao(ESituacaoPartida.FINALIZADA);
             }else{
                 p.setQuantidadeJogadas(0);
                 p.setCartasRodadaAtual(createNumbersCards(Arrays.asList(5,15,-20,30,25)));
             }
+            p.setRodada(p.getRodada()+1);
 
         }
 
