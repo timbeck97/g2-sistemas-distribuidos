@@ -15,6 +15,8 @@ services:
             - APP_NAME=app0(8080)
             - DATABASE_HOST=192.168.0.10
             - PROFILE=prod
+            - game.quantidade.maxima.jogadores=2
+            - game.quantidade.rodadas=3
 
     jogodistribuido_app2:
         image: timbeck1997/jogodistribuido:latest
@@ -32,6 +34,8 @@ services:
             - APP_NAME=app1(8081)
             - DATABASE_HOST=192.168.0.10
             - PROFILE=prod
+            - game.quantidade.maxima.jogadores=2
+            - game.quantidade.rodadas=3
 
     jogodistribuido_app3:
         image: timbeck1997/jogodistribuido:latest
@@ -49,6 +53,8 @@ services:
             - APP_NAME=app2(8082)
             - DATABASE_HOST=192.168.0.10
             - PROFILE=prod
+            - game.quantidade.maxima.jogadores=2
+            - game.quantidade.rodadas=3
     management1:
         image: container-registry.oracle.com/mysql/community-cluster
         container_name: management1
