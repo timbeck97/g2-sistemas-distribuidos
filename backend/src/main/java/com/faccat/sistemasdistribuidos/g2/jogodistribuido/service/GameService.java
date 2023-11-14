@@ -38,6 +38,7 @@ public class GameService {
         Partida partida=new Partida();
         partida.setJogadores(0);
         partida.setSituacao(ESituacaoPartida.AGUARDANDO);
+        partida.setRodada(1);
         //partida.setHora(adicionaSegundos(new Date(),segundosInicioPuartida));
         partida.setCartasRodadaAtual(createNumbersCards(Arrays.asList(5,15,-20,30,25)));
         partida=partidaRepository.save(partida);
@@ -139,13 +140,13 @@ public class GameService {
         partidaJogadorRepository.save(partidaJogador);
         Partida p=partidaJogador.getPartida();
         p.setQuantidadeJogadas(p.getQuantidadeJogadas()+1);
+        p.setRodada(p.getRodada()+1);
 
         int qttJogadas=partidaJogadorRepository.countByPartidaId(p.getId());
         if(p.getQuantidadeJogadas()==qttJogadas){
             if(p.getRodada()==quantidadeRodadas){
                 p.setSituacao(ESituacaoPartida.FINALIZADA);
             }else{
-                p.setRodada(p.getRodada()+1);
                 p.setQuantidadeJogadas(0);
                 p.setCartasRodadaAtual(createNumbersCards(Arrays.asList(5,15,-20,30,25)));
             }

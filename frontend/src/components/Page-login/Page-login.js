@@ -120,9 +120,7 @@ function PageLogin() {
 			})
 	}
 	const sairPartida = () => {
-		let partida = partidas.find(
-			(partida) => partida.situacaoPartida === "ANDAMENTO"
-		)
+		let partida = partidaAberta
 		let participante = partida.jogadores.find(
 			(participante) => participante.nome === userName
 		)
