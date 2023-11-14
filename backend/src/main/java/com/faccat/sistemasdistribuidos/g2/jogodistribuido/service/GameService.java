@@ -140,10 +140,11 @@ public class GameService {
         partidaJogadorRepository.save(partidaJogador);
         Partida p=partidaJogador.getPartida();
         p.setQuantidadeJogadas(p.getQuantidadeJogadas()+1);
-        p.setRodada(p.getRodada()+1);
+
 
         int qttJogadas=partidaJogadorRepository.countByPartidaId(p.getId());
         if(p.getQuantidadeJogadas()==qttJogadas){
+            p.setRodada(p.getRodada()+1);
             if(p.getRodada()==quantidadeRodadas){
                 p.setSituacao(ESituacaoPartida.FINALIZADA);
             }else{
