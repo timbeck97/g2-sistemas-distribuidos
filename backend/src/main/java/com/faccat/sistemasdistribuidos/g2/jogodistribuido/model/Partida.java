@@ -23,8 +23,6 @@ public class Partida {
 
     private int jogadores;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date hora;
 
     @Column(columnDefinition = "TEXT")
     private String cartasRodadaAtual;
@@ -64,14 +62,6 @@ public class Partida {
 
     public void setJogadores(int jogadores) {
         this.jogadores = jogadores;
-    }
-
-    public Date getHora() {
-        return hora;
-    }
-
-    public void setHora(Date hora) {
-        this.hora = hora;
     }
 
     public String getCartasRodadaAtual() {

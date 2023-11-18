@@ -39,7 +39,6 @@ public class GameService {
         partida.setJogadores(0);
         partida.setSituacao(ESituacaoPartida.AGUARDANDO);
         partida.setRodada(1);
-        //partida.setHora(adicionaSegundos(new Date(),segundosInicioPuartida));
         partida.setCartasRodadaAtual(createNumbersCards(Arrays.asList(5,15,-20,30,25)));
         partida=partidaRepository.save(partida);
         return createPartidaDTO(partida);
@@ -53,7 +52,6 @@ public class GameService {
         partida.setJogadores(partida.getJogadores()+1);
         if(partida.getJogadores()==quantidadeMinimaJogadores){
             partida.setSituacao(ESituacaoPartida.ANDAMENTO);
-            partida.setHora(adicionaSegundos(new Date(),3));
         }
         partida=partidaRepository.save(partida);
         PartidaJogador partidaJogador=new PartidaJogador(partida, jogador);
@@ -92,7 +90,6 @@ public class GameService {
         PartidaDTO dto=new PartidaDTO();
         dto.setId(partida.getId());
         dto.setSituacaoPartida(partida.getSituacao());
-        dto.setHora(partida.getHora());
         dto.setJogadores(partidaJogadorRepository.findByPartidaId(partida.getId()));
         return dto;
     }
@@ -115,7 +112,6 @@ public class GameService {
         dto.setRodada(partida.getRodada());
         dto.setCartas(getCards(partida));
         dto.setSituacaoPartida(partida.getSituacao());
-        //dto.setHora(adicionaSegundos(partida.getHora(),segundosRodada*partida.getRodada()));
         return dto;
     }
     public List<CardDTO> getCards(Partida p){
@@ -157,10 +153,5 @@ public class GameService {
         partidaRepository.save(p);
 
     }
-    public Date adicionaMinutos(Date data, int minutos){
-        return new Date(data.getTime() + minutos * 60000);
-    }
-    public Date adicionaSegundos(Date data, int segundos){
-        return new Date(data.getTime() + segundos * 1000);
-    }
+
 }
